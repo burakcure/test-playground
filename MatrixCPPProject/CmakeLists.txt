@@ -1,0 +1,36 @@
+cmake_minimum_required(VERSION 3.14)
+project(MatrixCPPProject)
+set(CMAKE_CXX_STANDARD 17)
+
+include(FetchContent)
+
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+)
+
+FetchContent_Declare(
+  googlebenchmark
+  URL https://github.com/google/benchmark/archive/refs/heads/main.zip
+)
+
+
+FetchContent_MakeAvailable(googletest)
+FetchContent_MakeAvailable(googlebenchmark)
+
+enable_testing()
+
+
+add_library(matrix src/matrix.cpp src/matrix.h)
+
+add_executable(unit_test test/unit_test.cpp)
+add_executable(benchmark_matrix test/benchmark_matrix.cpp)
+
+target_link_libraries(unit_test PRIVATE matrix gtest_main)
+target_link_libraries(benchmark_matrix PRIVATE matrix benchmark::benchmark)
+
+target_include_directories(unit_test PRIVATE src)
+target_include_directories(benchmark_matrix PRIVATE src)
+
+include(GoogleTest)
+gtest_discover_tests(unit_test)
